@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: product-service
-          image: sa-product-service
-          imagePullPolicy: Never
+          image: harirajana/sa-product-service:jenkins-build
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: product-service-config
