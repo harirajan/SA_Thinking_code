@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDS = credentials('dockerhub-v2')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/harirajan/SA_Thinking_code.git',
+                    credentialsId: 'github-harirajan'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('product-service') {
+                    sh 'mvn clean test'
+                }
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                dir('product-service') {
+                    sh 'docker build -t sa-product-service:jenkins-build .'
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                sh '''
+                    echo "$DOCKERHUB_CREDS_PSW" | docker login -u "$DOCKERHUB_CREDS_USR" --password-stdin
+                    docker tag sa-product-service:jenkins-build harirajana/sa-product-service:jenkins-build
+                    docker push harirajana/sa-product-service:jenkins-build
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker run --rm --network minikube \
+                      -v /tmp/jenkins-kubeconfig-internal:/kubeconfig \
+                      curlimages/curl:latest \
+                      sh -c "curl -sLO https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl && chmod +x kubectl && KUBECONFIG=/kubeconfig ./kubectl rollout restart deployment/product-service -n sa-thinking-code"
+                '''
+            }
+        }
+    }
+}
