@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-service-config
+  namespace: sa-thinking-code
+data:
+  SPRING_DATASOURCE_SHARD0_JDBC-URL: "jdbc:postgresql://postgres:5432/order_shard_0"
+  SPRING_DATASOURCE_SHARD0_USERNAME: "harirajana"
+  SPRING_DATASOURCE_SHARD0_HIKARI_MAXIMUM-POOL-SIZE: "3"
+  SPRING_DATASOURCE_SHARD1_JDBC-URL: "jdbc:postgresql://postgres:5432/order_shard_1"
+  SPRING_DATASOURCE_SHARD1_USERNAME: "harirajana"
+  SPRING_DATASOURCE_SHARD1_HIKARI_MAXIMUM-POOL-SIZE: "3"
+  SPRING_DATASOURCE_SHARD2_JDBC-URL: "jdbc:postgresql://postgres:5432/order_shard_2"
+  SPRING_DATASOURCE_SHARD2_USERNAME: "harirajana"
+  SPRING_DATASOURCE_SHARD2_HIKARI_MAXIMUM-POOL-SIZE: "3"
+  SPRING_DATA_REDIS_HOST: "redis"
+  SPRING_DATA_REDIS_PORT: "6379"
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+  EUREKA_INSTANCE_HOSTNAME: "order-service"

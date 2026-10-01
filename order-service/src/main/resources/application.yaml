@@ -1,0 +1,46 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: order-service
+  datasource:
+    shard0:
+      jdbc-url: jdbc:postgresql://postgres-primary:5432/order_shard_0
+      username: harirajana
+      password:
+    shard1:
+      jdbc-url: jdbc:postgresql://postgres-primary:5432/order_shard_1
+      username: harirajana
+      password:
+    shard2:
+      jdbc-url: jdbc:postgresql://postgres-primary:5432/order_shard_2
+      username: harirajana
+      password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  data:
+    redis:
+      host: redis
+      port: 6379
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: false
+    hostname: order-service
+resilience4j:
+  circuit breaker:
+    instances:
+      productService:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3

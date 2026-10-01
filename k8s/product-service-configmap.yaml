@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-service-config
+  namespace: sa-thinking-code
+data:
+  SPRING_DATASOURCE_PRIMARY_JDBC-URL: "jdbc:postgresql://postgres:5432/product_db"
+  SPRING_DATASOURCE_PRIMARY_USERNAME: "harirajana"
+  SPRING_DATASOURCE_PRIMARY_HIKARI_MAXIMUM-POOL-SIZE: "3"
+  SPRING_DATASOURCE_REPLICA_JDBC-URL: "jdbc:postgresql://postgres-replica:5432/product_db"
+  SPRING_DATASOURCE_REPLICA_USERNAME: "harirajana"
+  SPRING_DATASOURCE_REPLICA_HIKARI_MAXIMUM-POOL-SIZE: "3"
+  SPRING_DATA_REDIS_HOST: "redis"
+  SPRING_DATA_REDIS_PORT: "6379"
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+  EUREKA_INSTANCE_HOSTNAME: "product-service"

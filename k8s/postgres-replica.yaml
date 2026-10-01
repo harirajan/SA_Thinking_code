@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-replica
+  namespace: sa-thinking-code
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-replica
+  template:
+    metadata:
+      labels:
+        app: postgres-replica
+    spec:
+      containers:
+        - name: postgres-replica
+          image: sa-postgres-replica
+          imagePullPolicy: Never
+          env:
+            - name: PRIMARY_HOST
+              value: "postgres"
+            - name: PRIMARY_PORT
+              value: "5432"
+            - name: REPLICATION_USER
+              value: "replicator"
+            - name: REPLICATION_PASSWORD
+              value: "replpass123"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: replica-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: replica-storage
+          persistentVolumeClaim:
+            claimName: postgres-replica-pvc

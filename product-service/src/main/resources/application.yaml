@@ -1,0 +1,39 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    primary:
+      jdbc-url: jdbc:postgresql://postgres-primary:5432/product_db
+      username: harirajana
+      password:
+    replica:
+      jdbc-url: jdbc:postgresql://postgres-primary:5432/product_db
+      username: harirajana
+      password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  data:
+    redis:
+      host: redis
+      port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 300000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: false
+    hostname: product-service

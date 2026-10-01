@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  postgres-primary:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: harirajana
+      POSTGRES_PASSWORD: ""
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5450:5432"
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+      - ./postgres-primary/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres-primary/pg_hba.conf:/etc/postgresql/pg_hba.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
+
+  postgres-replica:
+    build: ./postgres-replica
+    environment:
+      PRIMARY_HOST: postgres-primary
+      PRIMARY_PORT: "5432"
+      REPLICATION_USER: replicator
+      REPLICATION_PASSWORD: replpass123
+    depends_on:
+      - postgres-primary
+    ports:
+      - "5451:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6390:6379"
+
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8771:8761"
+
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - postgres-primary
+      - eureka-server
+    ports:
+      - "8093:8083"
+  product-service:
+    build: ./product-service
+    depends_on:
+      - postgres-primary
+      - eureka-server
+      - redis
+    ports:
+      - "8091:8081"
+
+  order-service:
+    build: ./order-service
+    depends_on:
+      - postgres-primary
+      - eureka-server
+      - redis
+      - product-service
+    ports:
+      - "8092:8082"
+
+  api-gateway:
+    build: ./api-gateway
+    depends_on:
+      - eureka-server
+      - auth-service
+      - product-service
+      - order-service
+      - redis
+    ports:
+      - "8095:8080"

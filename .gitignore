@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+*.iml
+
+# Maven build output (every service folder)
+target/
+
+# Runtime logs/PIDs from start-all.sh
+.logs/
+.pids/
+
+# Local Postgres replica data (not something to version-control)
+postgres-replica-data/
+
+# Kubernetes Secret manifests - contain real credential values, never commit
+k8s/*-secret.yaml

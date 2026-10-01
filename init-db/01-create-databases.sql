@@ -1,0 +1,6 @@
+CREATE DATABASE auth_db;
+CREATE DATABASE product_db;
+CREATE DATABASE order_shard_0;
+CREATE DATABASE order_shard_1;
+CREATE DATABASE order_shard_2;
+CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'replpass123';
